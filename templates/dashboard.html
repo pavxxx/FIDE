@@ -1,6 +1,18 @@
-<h2>Welcome {{ user }}</h2>
+{% extends "base_dashboard.html" %}
+{% block content %}
 
-<ul>
-    <li><a href="/players">View Players</a></li>
-    <li><a href="/top">Top 10 Players</a></li>
-</ul>
+<h1>Analytical Dashboard</h1>
+
+<div class="dashboard-cards">
+    <div class="card">
+        <h3>{{ total_players }}</h3>
+        <p>Total Registered Players</p>
+    </div>
+
+    <div class="card">
+        <h3>{{ active_gms }}</h3>
+        <p>Active Grandmasters</p>
+    </div>
+</div>
+
+{% endblock %}

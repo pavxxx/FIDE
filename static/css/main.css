@@ -1,0 +1,119 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 60px;
+    background: white;
+    border-bottom: 1px solid #eee;
+}
+
+.navbar a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: black;
+}
+
+.btn-dark {
+    background: black;
+    color: white !important;
+    padding: 10px 20px;
+}
+
+.btn-outline {
+    border: 1px solid black;
+    padding: 10px 20px;
+}
+
+/* HERO */
+.hero {
+    display: flex;
+    padding: 80px 60px;
+}
+
+.hero-left {
+    flex: 1;
+}
+
+.hero-left h1 {
+    font-size: 60px;
+}
+
+.hero-right img {
+    width: 500px;
+}
+
+/* STATS */
+.stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 60px;
+    background: black;
+    color: white;
+}
+
+/* LOGIN */
+.login-page {
+    display: flex;
+    height: 100vh;
+}
+
+.login-left {
+    flex: 1;
+    background: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 100px;
+}
+
+.login-right input {
+    margin: 10px 0;
+    padding: 12px;
+    border: 1px solid #ccc;
+}
+
+.login-right button {
+    padding: 12px;
+    background: black;
+    color: white;
+    border: none;
+}
+
+/* DASHBOARD */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #f4f4f4;
+    position: fixed;
+    padding: 30px;
+}
+
+.dashboard-content {
+    margin-left: 240px;
+    padding: 40px;
+}
+
+.dashboard-cards {
+    display: flex;
+    gap: 30px;
+}
+
+.card {
+    background: #f9f9f9;
+    padding: 30px;
+    border: 1px solid #eee;
+}
