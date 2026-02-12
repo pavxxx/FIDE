@@ -1,0 +1,14 @@
+<h2>Top 10 Players</h2>
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Rating</th>
+    </tr>
+
+    {% for p in players %}
+    <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ p.standard_rating }}</td>
+    </tr>
+    {% endfor %}
+</table>
