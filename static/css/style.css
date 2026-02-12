@@ -1,0 +1,161 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f7f7f7;
+    color: #111;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 80px;
+    background: white;
+    border-bottom: 1px solid #eee;
+}
+
+.logo {
+    font-weight: 700;
+}
+
+.nav-links a {
+    margin-left: 30px;
+    font-size: 14px;
+}
+
+/* HERO */
+.hero {
+    padding: 100px 80px;
+}
+
+.hero h1 {
+    font-size: 60px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    margin-bottom: 30px;
+    color: #555;
+}
+
+/* BUTTONS */
+.btn {
+    padding: 16px 40px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: 0.3s;
+}
+
+.btn-primary {
+    background: black;
+    color: white;
+    border: 1px solid black;
+}
+
+.btn-primary:hover {
+    background: #111;
+}
+
+.btn-outline {
+    border: 1px solid black;
+    color: black;
+}
+
+.btn-outline:hover {
+    background: black;
+    color: white;
+}
+
+.small {
+    padding: 8px 16px;
+    font-size: 11px;
+}
+
+.full {
+    width: 100%;
+}
+
+/* STATS */
+.stats {
+    background: black;
+    color: white;
+    padding: 60px 80px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.stat-box {
+    text-align: center;
+}
+
+.stat-box h2 {
+    font-size: 36px;
+}
+
+/* TABLE */
+.section {
+    padding: 80px;
+}
+
+table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+/* AUTH */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+.auth-box {
+    width: 350px;
+}
+
+.auth-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+}
+
+/* DASHBOARD */
+.dashboard-cards {
+    display: flex;
+    gap: 30px;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    flex: 1;
+}
+
+/* FOOTER */
+.footer {
+    padding: 30px 80px;
+    background: #eee;
+    margin-top: 50px;
+}

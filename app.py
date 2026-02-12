@@ -1,28 +1,25 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from db_config import get_connection
 
 app = Flask(__name__)
-app.secret_key = "super_secret_key_change_this"
+app.secret_key = "change_this_secret_key"
 
 
 # ===============================
-# PUBLIC HOME PAGE
+# HOME
 # ===============================
 @app.route("/")
 def home():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
-    # Total players
     cursor.execute("SELECT COUNT(*) AS total FROM players")
     total_players = cursor.fetchone()["total"]
 
-    # Total federations
     cursor.execute("SELECT COUNT(*) AS total FROM federations")
     total_federations = cursor.fetchone()["total"]
 
-    # Active GMs (rating >= 2500 example)
     cursor.execute("""
         SELECT COUNT(*) AS total
         FROM ratings
@@ -41,54 +38,6 @@ def home():
 
 
 # ===============================
-# PUBLIC RANKINGS PAGE
-# ===============================
-@app.route("/rankings")
-def rankings():
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("""
-        SELECT p.fide_id, p.name, r.standard_rating
-        FROM players p
-        JOIN ratings r ON p.fide_id = r.fide_id
-        ORDER BY r.standard_rating DESC
-        LIMIT 50
-    """)
-
-    players = cursor.fetchall()
-    conn.close()
-
-    return render_template("rankings.html", players=players)
-
-
-# ===============================
-# PUBLIC PLAYER PROFILE
-# ===============================
-@app.route("/player/<int:fide_id>")
-def player_profile(fide_id):
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("""
-        SELECT p.name, p.birth_year, p.sex,
-               r.standard_rating, r.rapid_rating, r.blitz_rating,
-               r.fed_code
-        FROM players p
-        JOIN ratings r ON p.fide_id = r.fide_id
-        WHERE p.fide_id = %s
-    """, (fide_id,))
-
-    player = cursor.fetchone()
-    conn.close()
-
-    if not player:
-        return "Player not found"
-
-    return render_template("player_profile.html", player=player)
-
-
-# ===============================
 # SIGNUP
 # ===============================
 @app.route("/signup", methods=["GET", "POST"])
@@ -96,33 +45,37 @@ def signup():
     error = None
 
     if request.method == "POST":
-        fide_id = request.form["fide_id"]
-        username = request.form["username"]
-        password = request.form["password"]
+        fide_id = request.form.get("fide_id")
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not fide_id or not username or not password:
+            return render_template("signup.html", error="All fields required")
 
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # Check if fide_id exists
+        # Check if FIDE ID exists
         cursor.execute("SELECT * FROM players WHERE fide_id = %s", (fide_id,))
-        if not cursor.fetchone():
-            conn.close()
-            error = "Invalid FIDE ID."
-            return render_template("signup.html", error=error)
+        player_exists = cursor.fetchone()
 
-        # Check if username already exists
+        if not player_exists:
+            conn.close()
+            return render_template("signup.html", error="Invalid FIDE ID")
+
+        # Check username uniqueness
         cursor.execute("SELECT * FROM player_login WHERE username = %s", (username,))
         if cursor.fetchone():
             conn.close()
-            error = "Username already taken."
-            return render_template("signup.html", error=error)
+            return render_template("signup.html", error="Username already taken")
 
-        hashed_pw = generate_password_hash(password)
+        # Hash password properly
+        hashed_password = generate_password_hash(password)
 
         cursor.execute("""
             INSERT INTO player_login (fide_id, username, password_hash)
             VALUES (%s, %s, %s)
-        """, (fide_id, username, hashed_pw))
+        """, (fide_id, username, hashed_password))
 
         conn.commit()
         conn.close()
@@ -140,28 +93,33 @@ def login():
     error = None
 
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
 
         cursor.execute("SELECT * FROM player_login WHERE username = %s", (username,))
         user = cursor.fetchone()
+
         conn.close()
 
-        if user and check_password_hash(user["password_hash"], password):
+        if not user:
+            return render_template("login.html", error="User not found")
+
+        # Check password correctly
+        if check_password_hash(user["password_hash"], password):
             session["user_id"] = user["fide_id"]
             session["username"] = user["username"]
             return redirect("/dashboard")
-
-        error = "Invalid credentials"
+        else:
+            return render_template("login.html", error="Invalid password")
 
     return render_template("login.html", error=error)
 
 
 # ===============================
-# PLAYER DASHBOARD (PRIVATE)
+# DASHBOARD
 # ===============================
 @app.route("/dashboard")
 def dashboard():
@@ -174,34 +132,19 @@ def dashboard():
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
-        SELECT p.name, p.birth_year, p.sex,
-               r.standard_rating, r.rapid_rating, r.blitz_rating
+        SELECT p.name,
+               r.standard_rating,
+               r.rapid_rating,
+               r.blitz_rating
         FROM players p
         JOIN ratings r ON p.fide_id = r.fide_id
         WHERE p.fide_id = %s
     """, (fide_id,))
 
     player = cursor.fetchone()
-
-    # Dashboard stats
-    cursor.execute("SELECT COUNT(*) AS total FROM players")
-    total_players = cursor.fetchone()["total"]
-
-    cursor.execute("""
-        SELECT COUNT(*) AS total
-        FROM ratings
-        WHERE standard_rating >= 2500
-    """)
-    active_gms = cursor.fetchone()["total"]
-
     conn.close()
 
-    return render_template(
-        "dashboard.html",
-        player=player,
-        total_players=total_players,
-        active_gms=active_gms
-    )
+    return render_template("dashboard.html", player=player)
 
 
 # ===============================

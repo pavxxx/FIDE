@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>FIDE Data System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="logo">FIDE</div>
+
+        <div class="nav-links">
+            <a href="/">System</a>
+            <a href="/rankings">Data</a>
+            {% if session.get("username") %}
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout">Logout</a>
+            {% else %}
+            <a href="/login" class="btn btn-primary small">Login</a>
+            <a href="/signup" class="btn btn-outline small">Signup</a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <div class="footer">
+        © 2024 International Chess Federation
+    </div>
+
+</body>
+
+</html>

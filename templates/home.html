@@ -1,31 +1,33 @@
-{% extends "base_public.html" %}
+{% extends "base.html" %}
 {% block content %}
 
-<section class="hero">
+<div class="hero">
     <div class="hero-left">
         <h1>THE GLOBAL STANDARD<br>FOR CHESS DATA.</h1>
         <p>The authoritative platform for FIDE federations and rating management.</p>
-        <a href="/rankings" class="btn-dark">Explore Database</a>
-        <a href="/login" class="btn-outline">Access Portal</a>
-    </div>
-    <div class="hero-right">
-        <img src="{{ url_for('static', filename='images/chess.jpg') }}">
-    </div>
-</section>
 
-<section class="stats">
-    <div>
+        <div class="hero-buttons">
+            <a href="/rankings" class="btn btn-primary">Explore Database</a>
+            <a href="/login" class="btn btn-outline">Access Portal</a>
+        </div>
+    </div>
+</div>
+
+<div class="stats">
+    <div class="stat-box">
         <h2>{{ total_players }}</h2>
         <p>Total Players</p>
     </div>
-    <div>
+
+    <div class="stat-box">
         <h2>{{ total_federations }}</h2>
         <p>Federations</p>
     </div>
-    <div>
+
+    <div class="stat-box">
         <h2>{{ active_gms }}</h2>
         <p>Active Grandmasters</p>
     </div>
-</section>
+</div>
 
 {% endblock %}

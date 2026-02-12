@@ -1,13 +1,36 @@
-{% extends "base.html" %}
-
+{% extends 'base_public.html' %}
 {% block content %}
+<section class="hero">
+    <h1>THE GLOBAL STANDARD FOR CHESS DATA.</h1>
+    <div class="stats-row">
+        <div class="stat-card">
+            <h2>{{ stats.players }}</h2>
+            <p>TOTAL PLAYERS</p>
+        </div>
+        <div class="stat-card">
+            <h2>199</h2>
+            <p>FEDERATIONS</p>
+        </div>
+    </div>
+</section>
 
-<h1>FIDE Data Management System</h1>
-<p>Welcome to the International FIDE Management System</p>
-
-<div style="margin-top:20px;">
-    <a href="/login">Login</a> |
-    <a href="/signup">Signup</a>
-</div>
-
+<section class="rankings">
+    <h3>World Top 10</h3>
+    <table>
+        <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Rating</th>
+            <th>Country</th>
+        </tr>
+        {% for player in players %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ player.name }}</td>
+            <td><strong>{{ player.standard_rating }}</strong></td>
+            <td>{{ player.country_name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</section>
 {% endblock %}

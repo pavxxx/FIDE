@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="section">
+    <h2>Top Rated Players</h2>
+
+    <table>
+        <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Rating</th>
+        </tr>
+
+        {% for player in players %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+                <a href="/player/{{ player.fide_id }}">
+                    {{ player.name }}
+                </a>
+            </td>
+            <td>{{ player.standard_rating }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

@@ -1,17 +1,24 @@
-{% extends "base_dashboard.html" %}
+{% extends "base.html" %}
 {% block content %}
 
-<h1>Analytical Dashboard</h1>
+<div class="section">
+    <h2>Welcome, {{ session.username }}</h2>
 
-<div class="dashboard-cards">
-    <div class="card">
-        <h3>{{ total_players }}</h3>
-        <p>Total Registered Players</p>
-    </div>
+    <div class="dashboard-cards">
+        <div class="card">
+            <h3>Standard Rating</h3>
+            <p>{{ player.standard_rating }}</p>
+        </div>
 
-    <div class="card">
-        <h3>{{ active_gms }}</h3>
-        <p>Active Grandmasters</p>
+        <div class="card">
+            <h3>Rapid Rating</h3>
+            <p>{{ player.rapid_rating }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Blitz Rating</h3>
+            <p>{{ player.blitz_rating }}</p>
+        </div>
     </div>
 </div>
 
