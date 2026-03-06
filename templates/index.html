@@ -1,36 +1,57 @@
-{% extends 'base_public.html' %}
+{% extends "base.html" %}
+
 {% block content %}
+
 <section class="hero">
-    <h1>THE GLOBAL STANDARD FOR CHESS DATA.</h1>
-    <div class="stats-row">
-        <div class="stat-card">
-            <h2>{{ stats.players }}</h2>
-            <p>TOTAL PLAYERS</p>
-        </div>
-        <div class="stat-card">
-            <h2>199</h2>
-            <p>FEDERATIONS</p>
-        </div>
-    </div>
+
+<div class="container">
+
+<h1>
+THE GLOBAL STANDARD<br>
+FOR CHESS DATA.
+</h1>
+
+<p>
+The authoritative platform for FIDE federations and rating management.
+</p>
+
+<div class="hero-buttons">
+
+<a href="{{ url_for('rankings') }}" class="btn-primary">
+EXPLORE DATABASE
+</a>
+
+<a href="{{ url_for('login') }}" class="btn-outline">
+ACCESS PORTAL
+</a>
+
+</div>
+
+</div>
+
 </section>
 
-<section class="rankings">
-    <h3>World Top 10</h3>
-    <table>
-        <tr>
-            <th>Rank</th>
-            <th>Name</th>
-            <th>Rating</th>
-            <th>Country</th>
-        </tr>
-        {% for player in players %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ player.name }}</td>
-            <td><strong>{{ player.standard_rating }}</strong></td>
-            <td>{{ player.country_name }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+<section class="stats">
+
+<div class="container stats-grid">
+
+<div class="stat">
+<h2>{{ total_players }}</h2>
+<p>Total Players</p>
+</div>
+
+<div class="stat">
+<h2>{{ federations }}</h2>
+<p>Federations</p>
+</div>
+
+<div class="stat">
+<h2>{{ gms }}</h2>
+<p>Active Grandmasters</p>
+</div>
+
+</div>
+
 </section>
+
 {% endblock %}
