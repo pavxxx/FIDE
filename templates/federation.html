@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="container">
+
+<h1 class="section-title">Federation Leaderboard</h1>
+
+<table class="table">
+
+<tr>
+<th>Federation</th>
+<th>Players</th>
+<th>Average Rating</th>
+</tr>
+
+{% for f in data %}
+
+<tr>
+
+<td>{{ f.fed_code }}</td>
+<td>{{ f.players }}</td>
+<td>{{ f.avg_rating|round }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</section>
+
+{% endblock %}
