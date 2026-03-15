@@ -2,12 +2,17 @@
 <html>
 <head>
 
-<title>FIDE</title>
+<title>FIDE Chess Data Platform</title>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/globe.gl"></script>
+<script src="https://unpkg.com/three"></script>
+<script src="https://unpkg.com/globe.gl"></script>
 </head>
 
 <body>
@@ -17,6 +22,13 @@
 <div class="nav-inner">
 
 <div class="logo">FIDE</div>
+
+<div class="nav-right">
+
+<form class="search-form">
+<input type="text" id="live-search" placeholder="Search players...">
+<ul id="search-results"></ul>
+</form>
 
 <div class="nav-links">
 
@@ -35,13 +47,99 @@
 
 </div>
 
+</div>
+
 </header>
 
 {% block content %}{% endblock %}
 
 <footer>
+
 © 2026 International Chess Federation
+
 </footer>
 
+<script>
+
+const counters = document.querySelectorAll('.counter');
+
+counters.forEach(counter => {
+
+let target = +counter.innerText;
+let count = 0;
+let speed = target / 100;
+
+function update(){
+
+count += speed;
+
+if(count < target){
+counter.innerText = Math.floor(count);
+requestAnimationFrame(update);
+}
+else{
+counter.innerText = target.toLocaleString();
+}
+
+}
+
+update();
+
+});
+
+</script>
+<script>
+
+const toggle = document.getElementById("theme-toggle");
+
+toggle.onclick = () => {
+
+document.body.classList.toggle("dark");
+
+localStorage.setItem(
+"theme",
+document.body.classList.contains("dark") ? "dark" : "light"
+);
+
+};
+
+if(localStorage.getItem("theme")==="dark"){
+document.body.classList.add("dark");
+}
+
+</script>
+<script>
+
+const input=document.getElementById("live-search")
+const results=document.getElementById("search-results")
+
+input.addEventListener("keyup",async()=>{
+
+let q=input.value
+
+if(q.length<2){
+results.innerHTML=""
+return
+}
+
+let res = await fetch(`/search_players?q=${q}`)
+let data=await res.json()
+
+results.innerHTML=""
+
+data.players.forEach(p=>{
+
+let li=document.createElement("li")
+
+li.innerHTML=`<a href="/player/${p.fide_id}">${p.name}</a>`
+
+results.appendChild(li)
+
+})
+
+})
+
+</script>
 </body>
+
 </html>

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Top 10 Players</h2>
+
+<table class="data-table">
+<thead>
+  <tr><th>Rank</th><th>Name</th><th>Rating</th></tr>
+</thead>
+
+<tbody>
+{% for p in players %}
+<tr>
+  <td>{{ loop.index }}</td>
+  <td><a href="{{ url_for('player_profile', fide_id=p.fide_id) }}">{{ p.name }}</a></td>
+  <td>{{ p.standard_rating }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

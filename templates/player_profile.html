@@ -1,8 +1,7 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<div class="container dashboard">
+<section class="container">
 
 <h1>{{ player.name }}</h1>
 
@@ -25,6 +24,74 @@
 
 </div>
 
+<canvas id="ratingChart"></canvas>
+
+</section>
+<div class="strength-box">
+
+<h3>AI Strength Estimate</h3>
+
+<div class="strength-bar">
+
+<div class="strength-level"
+style="width: {{ player.standard_rating/30 }}%">
 </div>
+
+</div>
+
+<p>Estimated Strength: {{ player.standard_rating }}</p>
+
+</div>
+<canvas id="ratingChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById('ratingChart');
+
+new Chart(ctx,{
+
+type:'line',
+
+data:{
+labels:['Standard','Rapid','Blitz'],
+
+datasets:[{
+
+label:'Rating',
+
+data:[
+{{ player.standard_rating }},
+{{ player.rapid_rating }},
+{{ player.blitz_rating }}
+],
+
+borderColor:'#000',
+backgroundColor:'rgba(0,0,0,0.1)',
+
+tension:0.4
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+animation:{
+duration:2000
+},
+
+plugins:{
+legend:{display:false}
+}
+
+}
+
+});
+
+</script>
 
 {% endblock %}

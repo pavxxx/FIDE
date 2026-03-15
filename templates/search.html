@@ -1,14 +1,14 @@
 {% extends "base.html" %}
+
 {% block content %}
 
-<section class="container">
+<div class="container">
 
-<h1 class="section-title">Global Rankings</h1>
+<h1>Search Results</h1>
 
 <table class="table">
 
 <tr>
-<th>Rank</th>
 <th>Name</th>
 <th>Rating</th>
 </tr>
@@ -16,8 +16,6 @@
 {% for p in players %}
 
 <tr>
-
-<td>{{ loop.index }}</td>
 
 <td>
 <a href="{{ url_for('player_profile', fide_id=p.fide_id) }}">
@@ -33,6 +31,6 @@
 
 </table>
 
-</section>
+</div>
 
 {% endblock %}
