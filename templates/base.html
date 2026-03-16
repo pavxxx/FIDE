@@ -1,145 +1,159 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
-<title>FIDE Chess Data Platform</title>
+    <title>FIDE Chess Data Platform</title>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/globe.gl"></script>
-<script src="https://unpkg.com/three"></script>
-<script src="https://unpkg.com/globe.gl"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
+    <script src="https://unpkg.com/three"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
 </head>
 
 <body>
 
-<header class="navbar">
+    <header class="navbar">
 
-<div class="nav-inner">
+        <div class="nav-inner">
 
-<div class="logo">FIDE</div>
+            <a href="{{ url_for('home') }}" class="logo">FIDE</a>
 
-<div class="nav-right">
+            <div class="nav-right">
 
-<form class="search-form">
-<input type="text" id="live-search" placeholder="Search players...">
-<ul id="search-results"></ul>
-</form>
+                <form class="search-form">
+                    <input type="text" id="live-search" placeholder="Search players...">
+                    <ul id="search-results"></ul>
+                </form>
 
-<div class="nav-links">
+                <div class="nav-links">
 
-<a href="{{ url_for('home') }}">System</a>
-<a href="{{ url_for('rankings') }}">Data</a>
+                    <a href="{{ url_for('home') }}">System</a>
+                    <a href="{{ url_for('rankings') }}">Data</a>
 
-{% if session.get('user_id') %}
-<a href="{{ url_for('dashboard') }}">Dashboard</a>
-<a href="{{ url_for('logout') }}">Logout</a>
-{% else %}
-<a href="{{ url_for('login') }}">Login</a>
-<a href="{{ url_for('signup') }}">Signup</a>
-{% endif %}
+                    {% if session.get('user_id') %}
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('signup') }}">Signup</a>
+                    {% endif %}
 
-</div>
+                </div>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-</header>
+    </header>
 
-{% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 
-<footer>
+    <footer>
 
-© 2026 International Chess Federation
+        © 2026 International Chess Federation
 
-</footer>
+    </footer>
 
-<script>
+    <script>
 
-const counters = document.querySelectorAll('.counter');
+        const counters = document.querySelectorAll('.counter');
 
-counters.forEach(counter => {
+        counters.forEach(counter => {
 
-let target = +counter.innerText;
-let count = 0;
-let speed = target / 100;
+            let target = +counter.innerText;
+            let count = 0;
+            let speed = target / 100;
 
-function update(){
+            function update() {
 
-count += speed;
+                count += speed;
 
-if(count < target){
-counter.innerText = Math.floor(count);
-requestAnimationFrame(update);
-}
-else{
-counter.innerText = target.toLocaleString();
-}
+                if (count < target) {
+                    counter.innerText = Math.floor(count);
+                    requestAnimationFrame(update);
+                }
+                else {
+                    counter.innerText = target.toLocaleString();
+                }
 
-}
+            }
 
-update();
+            update();
 
-});
+        });
 
-</script>
-<script>
+    </script>
+    <script>
 
-const toggle = document.getElementById("theme-toggle");
+        const toggle = document.getElementById("theme-toggle");
 
-toggle.onclick = () => {
+        toggle.onclick = () => {
 
-document.body.classList.toggle("dark");
+            document.body.classList.toggle("dark");
 
-localStorage.setItem(
-"theme",
-document.body.classList.contains("dark") ? "dark" : "light"
-);
+            localStorage.setItem(
+                "theme",
+                document.body.classList.contains("dark") ? "dark" : "light"
+            );
 
-};
+        };
 
-if(localStorage.getItem("theme")==="dark"){
-document.body.classList.add("dark");
-}
+        if (localStorage.getItem("theme") === "dark") {
+            document.body.classList.add("dark");
+        }
 
-</script>
-<script>
+    </script>
 
-const input=document.getElementById("live-search")
-const results=document.getElementById("search-results")
+    <script>
 
-input.addEventListener("keyup",async()=>{
+        const input = document.getElementById("live-search")
+        const results = document.getElementById("search-results")
 
-let q=input.value
+        input.addEventListener("keyup", async () => {
 
-if(q.length<2){
-results.innerHTML=""
-return
-}
+            let q = input.value
 
-let res = await fetch(`/search_players?q=${q}`)
-let data=await res.json()
+            if (q.length < 2) {
+                results.innerHTML = ""
+                results.style.display = "none"
+                return
+            }
 
-results.innerHTML=""
+            let res = await fetch(`/search_players?q=${q}`)
+            let data = await res.json()
 
-data.players.forEach(p=>{
+            results.innerHTML = ""
 
-let li=document.createElement("li")
+            if (data.players.length > 0) {
 
-li.innerHTML=`<a href="/player/${p.fide_id}">${p.name}</a>`
+                results.style.display = "block"
 
-results.appendChild(li)
+                data.players.forEach(p => {
 
-})
+                    let li = document.createElement("li")
 
-})
+                    li.innerHTML = `<a href="/player/${p.fide_id}">${p.name}</a>`
 
-</script>
+                    results.appendChild(li)
+
+                })
+
+            } else {
+
+                results.style.display = "none"
+
+            }
+
+        })
+
+    </script>
+
 </body>
 
 </html>
