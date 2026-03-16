@@ -4,6 +4,10 @@ css * {
     box-sizing: border-box;
 }
 
+.hero {
+    padding-top: 60px;
+}
+
 body {
     font-family: "Inter", sans-serif;
     color: #111;
@@ -30,7 +34,7 @@ body {
 
 .container {
     width: 1200px;
-    margin: 120px auto 0 auto;
+    margin: 25px auto 0 auto;
 }
 
 /* ================= NAVBAR ================= */
@@ -43,7 +47,8 @@ body {
 }
 
 .nav-inner {
-    width: 1200px;
+    max-width: 900px;
+    width: 90%;
     margin: auto;
 
     display: flex;
@@ -64,6 +69,8 @@ body {
     font-weight: 600;
     font-size: 20px;
     letter-spacing: 1px;
+    text-decoration: none;
+    color: black;
 }
 
 .nav-right {
@@ -108,7 +115,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
-    gap: 60px;
+    gap: 50px;
 }
 
 .hero-right {
@@ -193,6 +200,7 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     margin-top: 5px;
     padding: 5px;
+    display: none;
 }
 
 #search-results li {
@@ -208,6 +216,8 @@ body {
     color: black;
     font-size: 14px;
 }
+
+
 
 /* ================= HERO BACKGROUND ================= */
 
@@ -231,10 +241,14 @@ body {
 }
 
 .hero h1 {
-    font-size: 74px;
-    line-height: 1.05;
+    font-size: 56px;
+    line-height: 1.1;
     font-weight: 600;
     letter-spacing: -1px;
+}
+
+.hero-left {
+    padding-left: 100px;
 }
 
 .hero p {

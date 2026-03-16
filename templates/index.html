@@ -1,139 +1,140 @@
 {% extends "base.html" %}
 {% block content %}
 
+<!-- HERO SECTION -->
+
 <section class="hero">
 
-<div class="container hero-grid">
+    <div class="container hero-grid">
 
-<div class="hero-left">
+        <div class="hero-left">
 
-<h1>
-THE GLOBAL STANDARD<br>
-FOR CHESS DATA.
-</h1>
+            <h1>
+                THE GLOBAL STANDARD<br>
+                FOR CHESS DATA
+            </h1>
 
-<p>
-The authoritative platform for FIDE federations and rating management.
-</p>
+            <p>
+                The authoritative platform for FIDE federations and rating management.
+            </p>
 
-<div class="hero-buttons">
+            <div class="hero-buttons">
 
-<a href="{{ url_for('rankings') }}" class="btn-primary">
-Explore Database
-</a>
+                <a href="{{ url_for('rankings') }}" class="btn-primary">
+                    Explore Database
+                </a>
 
-<a href="{{ url_for('login') }}" class="btn-outline">
-Access Portal
-</a>
+                <a href="{{ url_for('login') }}" class="btn-outline">
+                    Access Portal
+                </a>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-<div class="hero-right">
+        <div class="hero-right">
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Chess_nlt45.svg"
-class="floating-piece">
+            <img src="{{ url_for('static', filename='image/chesspiece.png') }}" class="floating-piece"
+                alt="Chess piece">
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </section>
 
+
+<!-- STATS SECTION -->
 
 <section class="stats">
 
-<div class="container stats-grid">
+    <div class="container stats-grid">
 
-<div class="stat">
-<h2 class="counter">{{ total_players }}</h2>
-<p>Total Players</p>
-</div>
+        <div class="stat">
+            <h2 class="counter">{{ total_players }}</h2>
+            <p>Total Players</p>
+        </div>
 
-<div class="stat">
-<h2 class="counter">{{ federations }}</h2>
-<p>Federations</p>
-</div>
+        <div class="stat">
+            <h2 class="counter">{{ federations }}</h2>
+            <p>Federations</p>
+        </div>
 
-<div class="stat">
-<h2 class="counter">{{ gms }}</h2>
-<p>Active Grandmasters</p>
-</div>
+        <div class="stat">
+            <h2 class="counter">{{ gms }}</h2>
+            <p>Active Grandmasters</p>
+        </div>
 
-</div>
+    </div>
 
 </section>
 
+
+<!-- WORLD MAP / GLOBE -->
 
 <section class="world-map">
 
-<div class="container">
+    <div class="container">
 
-<h2 class="section-title">Global Federation Distribution</h2>
+        <h2 class="section-title">Global Federation Distribution</h2>
 
-<div id="globe"></div>
+        <div id="globe"></div>
 
-</div>
+    </div>
 
 </section>
+
+
 <script>
 
-const world = Globe()
-(document.getElementById('globe'))
+    const world = Globe()
+        (document.getElementById('globe'))
 
-.globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
 
-.backgroundColor('rgba(0,0,0,0)')
+        .backgroundColor('rgba(0,0,0,0)')
 
-.showAtmosphere(true)
+        .showAtmosphere(true)
 
-.atmosphereColor('#3a228a')
+        .atmosphereColor('#3a228a')
 
-.atmosphereAltitude(0.25)
+        .atmosphereAltitude(0.25)
 
-.width(900)
+        .width(900)
 
-.height(450)
+        .height(450)
 
 </script>
+
+
+<!-- TOP PLAYERS -->
 
 <section class="top-players">
 
-<div class="container">
+    <div class="container">
 
-<h2 class="section-title">Top 10 Players</h2>
+        <h2 class="section-title">Top 10 Players</h2>
 
-<div class="player-grid">
+        <div class="player-grid">
 
-{% for p in top_players %}
+            {% for p in top_players %}
 
-<div class="player-card">
+            <div class="player-card">
 
-<h3>{{ p.name }}</h3>
+                <h3>{{ p.name }}</h3>
 
-<p class="rating">{{ p.standard_rating }}</p>
+                <p class="rating">{{ p.standard_rating }}</p>
 
-<p class="fed">{{ p.fed_code }}</p>
+                <p class="fed">{{ p.fed_code }}</p>
 
-</div>
+            </div>
 
-{% endfor %}
+            {% endfor %}
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </section>
-
-<script>
-
-var map = L.map('map').setView([20,0],2);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-maxZoom:5
-}).addTo(map);
-
-</script>
 
 {% endblock %}
