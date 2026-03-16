@@ -3,21 +3,25 @@
 
 <div class="auth-page">
 
-<div class="auth-card">
+    <div class="auth-card">
 
-<h2>Login</h2>
+        <h2>Login</h2>
 
-<form method="POST">
+        <form method="POST">
 
-<input type="text" name="username" placeholder="Username">
+            <input type="text" name="username" placeholder="Username" required>
 
-<input type="password" name="password" placeholder="Password">
+            <input type="password" name="password" placeholder="Password" required>
 
-<button class="btn-primary">Login</button>
+            {% if error %}
+            <div class="alert-error">{{ error }}</div>
+            {% endif %}
 
-</form>
+            <button class="btn-primary" style="width: 100%;"><span>Login</span></button>
 
-</div>
+        </form>
+
+    </div>
 
 </div>
 

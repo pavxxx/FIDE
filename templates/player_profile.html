@@ -47,7 +47,7 @@
         <h3>AI Strength Estimate</h3>
 
         <div class="strength-bar">
-            <div class="strength-level" style="width: {{ (player.standard_rating or 0) / 30 }}%;">
+            <div class="strength-level" id="strengthLevel">
             </div>
         </div>
 
@@ -67,9 +67,15 @@
 
     const ctx = document.getElementById('ratingChart').getContext('2d');
 
-    const standard = {{ player.standard_rating or 0 }};
-    const rapid = {{ player.rapid_rating or 0 }};
-    const blitz = {{ player.blitz_rating or 0 }};
+    const standard = Number('{{ player.standard_rating or 0 }}');
+    const rapid = Number('{{ player.rapid_rating or 0 }}');
+    const blitz = Number('{{ player.blitz_rating or 0 }}');
+
+    // Apply strength bar width dynamically to avoid inline style parsing warnings
+    const strengthLevel = document.getElementById('strengthLevel');
+    if (strengthLevel) {
+        strengthLevel.style.width = (standard / 30) + '%';
+    }
 
     new Chart(ctx, {
 
