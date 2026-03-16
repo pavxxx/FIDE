@@ -119,13 +119,13 @@ def signup():
 
         if not player:
             conn.close()
-            return "Invalid FIDE ID"
+            return render_template("signup.html", error="Invalid FIDE ID")
 
         # check username
         cursor.execute("SELECT * FROM player_login WHERE username=%s", (username,))
         if cursor.fetchone():
             conn.close()
-            return "Username already exists"
+            return render_template("signup.html", error="Username already exists")
 
         hashed_password = generate_password_hash(password)
 
@@ -168,7 +168,7 @@ def login():
 
             return redirect(url_for("dashboard"))
 
-        return "Invalid credentials"
+        return render_template("login.html", error="Invalid credentials")
 
     return render_template("login.html")
 
