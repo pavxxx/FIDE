@@ -1,28 +1,97 @@
 {% extends "base.html" %}
-
 {% block content %}
 
 <div class="container dashboard">
 
-    <h1>Welcome, {{ player.name }}</h1>
+    <!-- PLAYER HEADER BANNER -->
+    <div class="dash-banner">
+        <div class="dash-avatar">♟</div>
+        <div class="dash-identity">
+            <h1>{{ player.name }}</h1>
+            <div class="dash-meta">
+                {% if player.title_code %}
+                <span class="title-badge title-badge-lg">{{ player.title_code }}</span>
+                {% endif %}
+                {% if player.fed_code %}
+                <span class="fed-badge">{{ player.fed_code }}</span>
+                {% endif %}
+                {% if player.sex %}
+                <span class="fed-badge">{{ 'Male' if player.sex == 'M' else 'Female' }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
+    <!-- RATING STAT CARDS -->
     <div class="dashboard-grid">
 
-        <div class="card">
+        <div class="card rating-card">
             <h3>Standard Rating</h3>
-            <p>{{ player.standard_rating }}</p>
+            <p>{{ player.standard_rating or '—' }}</p>
+            {% if player.standard_rating %}
+            <div class="rating-bar-wrap">
+                <div class="rating-bar-fill" style="width: {{ [(player.standard_rating / 3000 * 100), 100] | min }}%"></div>
+            </div>
+            {% endif %}
         </div>
 
-        <div class="card">
+        <div class="card rating-card">
             <h3>Rapid Rating</h3>
-            <p>{{ player.rapid_rating }}</p>
+            <p>{{ player.rapid_rating or '—' }}</p>
+            {% if player.rapid_rating %}
+            <div class="rating-bar-wrap">
+                <div class="rating-bar-fill" style="width: {{ [(player.rapid_rating / 3000 * 100), 100] | min }}%"></div>
+            </div>
+            {% endif %}
         </div>
 
-        <div class="card">
+        <div class="card rating-card">
             <h3>Blitz Rating</h3>
-            <p>{{ player.blitz_rating }}</p>
+            <p>{{ player.blitz_rating or '—' }}</p>
+            {% if player.blitz_rating %}
+            <div class="rating-bar-wrap">
+                <div class="rating-bar-fill" style="width: {{ [(player.blitz_rating / 3000 * 100), 100] | min }}%"></div>
+            </div>
+            {% endif %}
         </div>
 
+        <div class="card rank-card">
+            <h3>Global Rank</h3>
+            <p>#{{ global_rank }}</p>
+        </div>
+
+    </div>
+
+    <!-- GAMES PLAYED -->
+    <div class="chart-card">
+        <h3 class="chart-card-title">Games Played</h3>
+        <div class="games-grid">
+            <div class="games-stat">
+                <span class="games-num">{{ player.standard_games or 0 }}</span>
+                <span class="games-label">Standard</span>
+            </div>
+            <div class="games-stat">
+                <span class="games-num">{{ player.rapid_games or 0 }}</span>
+                <span class="games-label">Rapid</span>
+            </div>
+            <div class="games-stat">
+                <span class="games-num">{{ player.blitz_games or 0 }}</span>
+                <span class="games-label">Blitz</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="dash-actions">
+        <a href="{{ url_for('player_profile', fide_id=fide_id) }}" class="btn-primary">
+            <span>View My Profile</span>
+        </a>
+        <a href="{{ url_for('compare') }}" class="btn-outline">
+            Compare Players
+        </a>
+        <a href="{{ url_for('rankings') }}" class="btn-outline">
+            Global Rankings
+        </a>
     </div>
 
 </div>

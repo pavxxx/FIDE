@@ -1,30 +1,96 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<section class="container">
+<section class="container compare-page">
 
     <h1 class="section-title">Player Comparison</h1>
+    <p class="section-sub">Enter two FIDE IDs to compare ratings head-to-head.</p>
 
-    <form method="POST">
+    <!-- SEARCH FORM -->
+    <form method="POST" class="compare-form">
 
-        <input name="p1" placeholder="Player 1 FIDE ID">
-        <input name="p2" placeholder="Player 2 FIDE ID">
+        <div class="compare-input-group">
+            <label>Player 1 FIDE ID</label>
+            <input name="p1" placeholder="e.g. 1503014" value="{{ p1.fide_id if p1 else '' }}" required>
+        </div>
 
-        <button class="btn-primary">Compare</button>
+        <div class="compare-vs">VS</div>
+
+        <div class="compare-input-group">
+            <label>Player 2 FIDE ID</label>
+            <input name="p2" placeholder="e.g. 4168119" value="{{ p2.fide_id if p2 else '' }}" required>
+        </div>
+
+        <button type="submit" class="btn-primary compare-btn"><span>Compare</span></button>
 
     </form>
 
     {% if p1 and p2 %}
 
-    <canvas id="compareChart"></canvas>
+    <!-- PLAYER HEADER CARDS -->
+    <div class="compare-headers">
+
+        <div class="compare-player-card">
+            <div class="cp-avatar">♟</div>
+            <div class="cp-info">
+                <h2>{{ p1.name }}</h2>
+                <div class="cp-meta">
+                    {% if p1.title_code %}<span class="title-badge">{{ p1.title_code }}</span>{% endif %}
+                    {% if p1.fed_code %}<span class="fed-badge">{{ p1.fed_code }}</span>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="compare-divider">⚔</div>
+
+        <div class="compare-player-card compare-player-card--right">
+            <div class="cp-info cp-info--right">
+                <h2>{{ p2.name }}</h2>
+                <div class="cp-meta cp-meta--right">
+                    {% if p2.title_code %}<span class="title-badge">{{ p2.title_code }}</span>{% endif %}
+                    {% if p2.fed_code %}<span class="fed-badge">{{ p2.fed_code }}</span>{% endif %}
+                </div>
+            </div>
+            <div class="cp-avatar">♟</div>
+        </div>
+
+    </div>
+
+    <!-- STAT ROWS -->
+    <div class="compare-stats">
+
+        {% set categories = [
+            ('Standard Rating', p1.standard_rating, p2.standard_rating),
+            ('Rapid Rating',    p1.rapid_rating,    p2.rapid_rating),
+            ('Blitz Rating',    p1.blitz_rating,    p2.blitz_rating),
+            ('Standard Games',  p1.standard_games,  p2.standard_games),
+            ('Rapid Games',     p1.rapid_games,     p2.rapid_games),
+            ('Blitz Games',     p1.blitz_games,     p2.blitz_games),
+        ] %}
+
+        {% for label, v1, v2 in categories %}
+        <div class="stat-row">
+            <div class="stat-val {{ 'stat-win' if v1 and v2 and v1 > v2 else ('stat-loss' if v1 and v2 and v1 < v2 else '') }}">
+                {{ v1 or '—' }}
+            </div>
+            <div class="stat-label">{{ label }}</div>
+            <div class="stat-val {{ 'stat-win' if v1 and v2 and v2 > v1 else ('stat-loss' if v1 and v2 and v2 < v1 else '') }}">
+                {{ v2 or '—' }}
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- BAR CHART -->
+    <div class="chart-card">
+        <h3 class="chart-card-title">Rating Comparison Chart</h3>
+        <canvas id="compareChart" height="100"></canvas>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script>
-
         const ctx = document.getElementById('compareChart');
-
         new Chart(ctx, {
             type: 'bar',
             data: {
@@ -33,25 +99,51 @@
                     {
                         label: '{{ p1.name }}',
                         data: [
-                            '{{ p1.standard_rating }}',
-                            '{{ p1.rapid_rating }}',
-                            '{{ p1.blitz_rating }}'
+                            {{ p1.standard_rating or 0 }},
+                            {{ p1.rapid_rating or 0 }},
+                            {{ p1.blitz_rating or 0 }}
                         ],
-                        backgroundColor: 'black'
+                        backgroundColor: '#111111',
+                        borderRadius: 8,
+                        borderSkipped: false,
                     },
                     {
                         label: '{{ p2.name }}',
                         data: [
-                            '{{ p2.standard_rating }}',
-                            '{{ p2.rapid_rating }}',
-                            '{{ p2.blitz_rating }}'
+                            {{ p2.standard_rating or 0 }},
+                            {{ p2.rapid_rating or 0 }},
+                            {{ p2.blitz_rating or 0 }}
                         ],
-                        backgroundColor: 'gray'
+                        backgroundColor: '#D4AF37',
+                        borderRadius: 8,
+                        borderSkipped: false,
                     }
                 ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: { family: 'Inter', size: 13 },
+                            color: '#333'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 1000,
+                        grid: { color: '#f0f0f0' },
+                        ticks: { font: { family: 'Inter', size: 12 }, color: '#888' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: 'Inter', size: 13 }, color: '#333' }
+                    }
+                }
             }
         });
-
     </script>
 
     {% endif %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="container">
+
+    <h1 class="section-title">Federation Leaderboard</h1>
+    <p class="section-sub">Ranked by average standard rating across all registered players.</p>
+
+    {% if data %}
+    <table class="table fed-table">
+        <tr>
+            <th>Rank</th>
+            <th>Federation</th>
+            <th>Players</th>
+            <th>Avg Rating</th>
+            <th>GMs</th>
+            <th></th>
+        </tr>
+        {% for f in data %}
+        <tr>
+            <td>
+                {% if loop.index == 1 %}
+                <span class="rank-badge gold">🥇 1</span>
+                {% elif loop.index == 2 %}
+                <span class="rank-badge silver">🥈 2</span>
+                {% elif loop.index == 3 %}
+                <span class="rank-badge bronze">🥉 3</span>
+                {% else %}
+                <span class="rank-num">{{ loop.index }}</span>
+                {% endif %}
+            </td>
+            <td>
+                <span class="fed-flag">{{ f.fed_code | fed_flag }}</span>
+                <strong>{{ f.fed_code }}</strong>
+            </td>
+            <td>{{ f.players }}</td>
+            <td>{{ f.avg_rating }}</td>
+            <td>
+                {% if f.gm_count and f.gm_count > 0 %}
+                <span class="title-badge">GM ×{{ f.gm_count }}</span>
+                {% else %}
+                —
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('federation_players', fed=f.fed_code) }}" class="table-link">View Players →</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🏳</div>
+        <h3>No federation data available</h3>
+        <p>Please check your database connection.</p>
+    </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}

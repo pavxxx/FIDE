@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="error-page">
+
+    <div class="error-card">
+
+        <div class="error-icon">♟</div>
+
+        <h1 class="error-code">404</h1>
+
+        <h2 class="error-title">Position Not Found</h2>
+
+        <p class="error-message">
+            The page you're looking for has been captured or never existed.<br>
+            Let's get you back to solid ground.
+        </p>
+
+        <div class="error-actions">
+            <a href="{{ url_for('home') }}" class="btn-primary"><span>Go Home</span></a>
+            <a href="{{ url_for('rankings') }}" class="btn-outline">View Rankings</a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

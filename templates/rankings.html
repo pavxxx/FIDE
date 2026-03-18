@@ -3,35 +3,92 @@
 
 <section class="container">
 
-<h1 class="section-title">Global Rankings</h1>
+    <h1 class="section-title">Global Rankings</h1>
 
-<table class="table">
+    <!-- FILTER BAR -->
+    <form class="filter-bar" method="GET" action="{{ url_for('rankings') }}">
 
-<tr>
-<th>Rank</th>
-<th>Name</th>
-<th>Rating</th>
-</tr>
+        <div class="filter-group">
+            <label>Federation</label>
+            <select name="fed">
+                <option value="">All Federations</option>
+                {% for f in feds %}
+                <option value="{{ f }}" {% if f == selected_fed %}selected{% endif %}>{{ f }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-{% for p in players %}
+        <div class="filter-group">
+            <label>Title</label>
+            <select name="title">
+                <option value="">All Titles</option>
+                {% for t in titles %}
+                <option value="{{ t }}" {% if t == selected_title %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-<tr>
+        <div class="filter-group">
+            <label>Sort By</label>
+            <select name="sort">
+                <option value="standard" {% if selected_sort == 'standard' %}selected{% endif %}>Standard</option>
+                <option value="rapid"    {% if selected_sort == 'rapid'    %}selected{% endif %}>Rapid</option>
+                <option value="blitz"    {% if selected_sort == 'blitz'    %}selected{% endif %}>Blitz</option>
+            </select>
+        </div>
 
-<td>{{ loop.index }}</td>
+        <button type="submit" class="btn-primary"><span>Apply Filters</span></button>
 
-<td>
-<a href="{{ url_for('player_profile', fide_id=p.fide_id) }}">
-{{ p.name }}
-</a>
-</td>
+        {% if selected_fed or selected_title or selected_sort != 'standard' %}
+        <a href="{{ url_for('rankings') }}" class="btn-outline filter-reset">Reset</a>
+        {% endif %}
 
-<td>{{ p.standard_rating }}</td>
+    </form>
 
-</tr>
+    <!-- ACTIVE FILTER CHIPS -->
+    {% if selected_fed or selected_title %}
+    <div class="filter-chips">
+        {% if selected_fed %}<span class="chip">Fed: {{ selected_fed }}</span>{% endif %}
+        {% if selected_title %}<span class="chip">Title: {{ selected_title }}</span>{% endif %}
+    </div>
+    {% endif %}
 
-{% endfor %}
-
-</table>
+    <!-- TABLE OR EMPTY STATE -->
+    {% if players %}
+    <table class="table">
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Fed</th>
+            <th>Title</th>
+            <th>Standard</th>
+            <th>Rapid</th>
+            <th>Blitz</th>
+        </tr>
+        {% for p in players %}
+        <tr>
+            <td class="rank-num">{{ loop.index }}</td>
+            <td><a href="{{ url_for('player_profile', fide_id=p.fide_id) }}">{{ p.name }}</a></td>
+            <td>{{ p.fed_code or '—' }}</td>
+            <td>
+                {% if p.title_code %}
+                <span class="title-badge">{{ p.title_code }}</span>
+                {% else %}—{% endif %}
+            </td>
+            <td>{{ p.standard_rating or '—' }}</td>
+            <td>{{ p.rapid_rating or '—' }}</td>
+            <td>{{ p.blitz_rating or '—' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">♟</div>
+        <h3>No players found</h3>
+        <p>Try adjusting your filters to see results.</p>
+        <a href="{{ url_for('rankings') }}" class="btn-primary"><span>Clear Filters</span></a>
+    </div>
+    {% endif %}
 
 </section>
 

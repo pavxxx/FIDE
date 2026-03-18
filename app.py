@@ -1,9 +1,31 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from db_config import get_connection
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "super_secret_key"
+app.secret_key = os.environ.get("SECRET_KEY", "fallback_dev_key")
+
+# Jinja2 filter: federation code → flag emoji
+_FLAG_MAP = {
+    "RUS": "🇷🇺", "USA": "🇺🇸", "CHN": "🇨🇳", "IND": "🇮🇳", "AZE": "🇦🇿",
+    "ARM": "🇦🇲", "GEO": "🇬🇪", "UKR": "🇺🇦", "NED": "🇳🇱", "GER": "🇩🇪",
+    "POL": "🇵🇱", "HUN": "🇭🇺", "CZE": "🇨🇿", "SRB": "🇷🇸", "ESP": "🇪🇸",
+    "FRA": "🇫🇷", "ITA": "🇮🇹", "ENG": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "SWE": "🇸🇪", "NOR": "🇳🇴",
+    "DEN": "🇩🇰", "FIN": "🇫🇮", "ISR": "🇮🇱", "TUR": "🇹🇷", "IRN": "🇮🇷",
+    "EGY": "🇪🇬", "BRA": "🇧🇷", "ARG": "🇦🇷", "CUB": "🇨🇺", "MEX": "🇲🇽",
+    "KAZ": "🇰🇿", "UZB": "🇺🇿", "AUS": "🇦🇺", "CAN": "🇨🇦", "BEL": "🇧🇪",
+    "AUT": "🇦🇹", "POR": "🇵🇹", "ROU": "🇷🇴", "BUL": "🇧🇬", "SVK": "🇸🇰",
+    "CRO": "🇭🇷", "LAT": "🇱🇻", "LTU": "🇱🇹", "EST": "🇪🇪", "BLR": "🇧🇾",
+    "GRE": "🇬🇷", "SLO": "🇸🇮", "VIE": "🇻🇳", "PHI": "🇵🇭", "RSA": "🇿🇦",
+}
+
+@app.template_filter("fed_flag")
+def fed_flag(code):
+    return _FLAG_MAP.get(code, "🏳")
 
 
 # ===============================
@@ -11,6 +33,33 @@ app.secret_key = "super_secret_key"
 # ===============================
 @app.route("/")
 def home():
+
+    # Lat/Lng for major FIDE federation codes
+    FED_COORDS = {
+        "RUS": (61.5, 105.3), "USA": (37.1, -95.7), "CHN": (35.9, 104.2),
+        "IND": (20.6, 78.9), "AZE": (40.1, 47.6), "ARM": (40.1, 45.0),
+        "GEO": (42.3, 43.4), "UKR": (48.4, 31.2), "NED": (52.1, 5.3),
+        "GER": (51.2, 10.5), "POL": (52.1, 19.1), "HUN": (47.2, 19.5),
+        "CZE": (49.8, 15.5), "SRB": (44.0, 21.0), "ESP": (40.5, -3.7),
+        "FRA": (46.2, 2.2), "ITA": (41.9, 12.6), "ENG": (52.4, -1.9),
+        "SWE": (60.1, 18.6), "NOR": (60.5, 8.5), "DEN": (56.3, 9.5),
+        "FIN": (61.9, 25.7), "ISR": (31.0, 34.9), "TUR": (38.9, 35.2),
+        "IRN": (32.4, 53.7), "EGY": (26.8, 30.8), "BRA": (-14.2, -51.9),
+        "ARG": (-38.4, -63.6), "CUB": (21.5, -80.0), "MEX": (23.6, -102.6),
+        "VEN": (6.4, -66.6), "COL": (4.6, -74.1), "PER": (-9.2, -75.0),
+        "KAZ": (48.0, 66.9), "UZB": (41.4, 64.6), "MNG": (46.9, 103.8),
+        "VIE": (14.1, 108.3), "PHI": (12.9, 121.8), "BAN": (23.7, 90.4),
+        "PAK": (30.4, 69.3), "SRI": (7.9, 80.7), "NIG": (9.1, 8.7),
+        "RSA": (-30.6, 22.9), "AUS": (-25.3, 133.8), "CAN": (56.1, -106.3),
+        "BEL": (50.5, 4.5), "AUT": (47.5, 14.6), "POR": (39.4, -8.2),
+        "GRE": (39.1, 21.8), "ROU": (45.9, 24.9), "BUL": (42.7, 25.5),
+        "SVK": (48.7, 19.7), "SLO": (46.2, 14.9), "CRO": (45.1, 15.2),
+        "BIH": (43.9, 17.7), "LAT": (56.9, 24.6), "LTU": (55.2, 23.9),
+        "EST": (58.6, 25.0), "BLR": (53.7, 27.9), "MKD": (41.6, 21.7),
+        "ALB": (41.2, 20.2), "KGZ": (41.2, 74.8), "TAJ": (38.9, 71.3),
+        "TKM": (38.9, 59.6), "MON": (43.7, 7.4), "ISL": (64.9, -18.0),
+        "IRL": (53.1, -8.2), "MLT": (35.9, 14.4), "CYP": (35.1, 33.4),
+    }
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -33,14 +82,37 @@ def home():
     """)
     top_players = cursor.fetchall()
 
+    cursor.execute("""
+        SELECT fed_code, COUNT(*) as player_count, ROUND(AVG(standard_rating)) as avg_rating
+        FROM ratings
+        WHERE fed_code IS NOT NULL AND fed_code != ''
+        GROUP BY fed_code
+        ORDER BY player_count DESC
+    """)
+    raw_feds = cursor.fetchall()
     conn.close()
+
+    # Merge with coordinates, skip unknown feds
+    fed_data = []
+    for row in raw_feds:
+        code = row["fed_code"]
+        if code in FED_COORDS:
+            lat, lng = FED_COORDS[code]
+            fed_data.append({
+                "code": code,
+                "lat": lat,
+                "lng": lng,
+                "count": row["player_count"],
+                "avg": int(row["avg_rating"] or 0)
+            })
 
     return render_template(
         "index.html",
         total_players=total_players,
         federations=federations,
         gms=gms,
-        top_players=top_players
+        top_players=top_players,
+        fed_data=fed_data
     )
 @app.route("/federations")
 def federations():
@@ -49,13 +121,15 @@ def federations():
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
-    SELECT fed_code,
-    COUNT(*) as players,
-    AVG(standard_rating) as avg_rating
-    FROM ratings
-    GROUP BY fed_code
+    SELECT
+        r.fed_code,
+        COUNT(*) AS players,
+        ROUND(AVG(r.standard_rating)) AS avg_rating,
+        SUM(CASE WHEN r.title_code = 'GM' THEN 1 ELSE 0 END) AS gm_count
+    FROM ratings r
+    WHERE r.fed_code IS NOT NULL AND r.fed_code != ''
+    GROUP BY r.fed_code
     ORDER BY avg_rating DESC
-    LIMIT 20
     """)
 
     data = cursor.fetchall()
@@ -217,20 +291,31 @@ def dashboard():
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
-        SELECT p.name,
-               r.standard_rating,
-               r.rapid_rating,
-               r.blitz_rating
+        SELECT p.name, p.birth_year, p.sex,
+               r.standard_rating, r.rapid_rating, r.blitz_rating,
+               r.standard_games, r.rapid_games, r.blitz_games,
+               r.fed_code, r.title_code
         FROM players p
         JOIN ratings r ON p.fide_id = r.fide_id
-        WHERE p.fide_id=%s
+        WHERE p.fide_id = %s
     """, (fide_id,))
-
     player = cursor.fetchone()
+
+    # Global rank: how many players have a higher standard rating
+    if player and player["standard_rating"]:
+        cursor.execute("""
+            SELECT COUNT(*) + 1 AS rank_position
+            FROM ratings
+            WHERE standard_rating > %s
+        """, (player["standard_rating"],))
+        rank_row = cursor.fetchone()
+        global_rank = rank_row["rank_position"] if rank_row else "N/A"
+    else:
+        global_rank = "N/A"
 
     conn.close()
 
-    return render_template("dashboard.html", player=player)
+    return render_template("dashboard.html", player=player, global_rank=global_rank, fide_id=fide_id)
 
 
 # ===============================
@@ -239,21 +324,62 @@ def dashboard():
 @app.route("/rankings")
 def rankings():
 
+    fed_filter  = request.args.get("fed", "")
+    title_filter = request.args.get("title", "")
+    sort_by     = request.args.get("sort", "standard")
+
+    # Whitelist sort column
+    sort_col_map = {
+        "standard": "r.standard_rating",
+        "rapid":    "r.rapid_rating",
+        "blitz":    "r.blitz_rating",
+    }
+    sort_col = sort_col_map.get(sort_by, "r.standard_rating")
+
+    conditions = []
+    params     = []
+
+    if fed_filter:
+        conditions.append("r.fed_code = %s")
+        params.append(fed_filter)
+    if title_filter:
+        conditions.append("r.title_code = %s")
+        params.append(title_filter)
+
+    where_clause = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""
-        SELECT p.fide_id, p.name, r.standard_rating
+    cursor.execute(f"""
+        SELECT p.fide_id, p.name,
+               r.standard_rating, r.rapid_rating, r.blitz_rating,
+               r.fed_code, r.title_code
         FROM players p
         JOIN ratings r ON p.fide_id = r.fide_id
-        ORDER BY r.standard_rating DESC
-        LIMIT 100
-    """)
-
+        {where_clause}
+        ORDER BY {sort_col} DESC
+        LIMIT 200
+    """, params)
     players = cursor.fetchall()
+
+    # Dropdown options
+    cursor.execute("SELECT DISTINCT fed_code FROM ratings WHERE fed_code IS NOT NULL AND fed_code != '' ORDER BY fed_code")
+    feds = [row["fed_code"] for row in cursor.fetchall()]
+
+    titles = ["GM", "WGM", "IM", "WIM", "FM", "WFM", "CM", "WCM"]
+
     conn.close()
 
-    return render_template("rankings.html", players=players)
+    return render_template(
+        "rankings.html",
+        players=players,
+        feds=feds,
+        titles=titles,
+        selected_fed=fed_filter,
+        selected_title=title_filter,
+        selected_sort=sort_by
+    )
 
 @app.route("/search")
 def search():
@@ -352,10 +478,20 @@ def compare():
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute("SELECT * FROM ratings WHERE fide_id=%s", (pid1,))
+        query = """
+            SELECT p.fide_id, p.name,
+                   r.standard_rating, r.rapid_rating, r.blitz_rating,
+                   r.standard_games, r.rapid_games, r.blitz_games,
+                   r.fed_code, r.title_code
+            FROM players p
+            JOIN ratings r ON p.fide_id = r.fide_id
+            WHERE p.fide_id = %s
+        """
+
+        cursor.execute(query, (pid1,))
         p1 = cursor.fetchone()
 
-        cursor.execute("SELECT * FROM ratings WHERE fide_id=%s", (pid2,))
+        cursor.execute(query, (pid2,))
         p2 = cursor.fetchone()
 
         conn.close()
@@ -382,6 +518,14 @@ def top10():
     conn.close()
 
     return render_template("top10_widget.html", players=players)
+# ===============================
+# ERROR HANDLERS
+# ===============================
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
+
+
 # ===============================
 # RUN APP
 # ===============================
