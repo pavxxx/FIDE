@@ -40,11 +40,8 @@ body::after {
     pointer-events: none;
     z-index: -10;
 
-    background-image: 
-      linear-gradient(45deg, rgba(0,0,0,0.025) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.025) 75%, rgba(0,0,0,0.025)),
-      linear-gradient(45deg, rgba(0,0,0,0.025) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.025) 75%, rgba(0,0,0,0.025));
-    background-size: 60px 60px;
-    background-position: 0 0, 30px 30px;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
 }
 
 /* GLOBAL CONTAINER */
@@ -394,6 +391,27 @@ section {
     position: relative;
 }
 
+/* ================= GLOBE ================= */
+
+.world-map {
+    padding: 80px 0;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+#globe {
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 20px;
+}
+
 /* ================= TABLE ================= */
 
 .table {
@@ -563,3 +581,540 @@ footer {
     color: #777;
     font-size: 13px;
 }
+
+/* ================= FILTER BAR (Rankings) ================= */
+
+.filter-bar {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    background: white;
+    padding: 20px 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+}
+
+.filter-group select {
+    padding: 9px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #222;
+    background: #fafafa;
+    cursor: pointer;
+    min-width: 160px;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.filter-reset {
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #444;
+    border: 1px solid #ddd;
+    transition: all 0.2s;
+}
+
+.filter-reset:hover {
+    background: #f3f4f6;
+}
+
+/* FILTER CHIPS */
+
+.filter-chips {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.chip {
+    background: #000;
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* ================= TITLE BADGE ================= */
+
+.title-badge {
+    background: #000;
+    color: #D4AF37;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+.title-badge-lg {
+    font-size: 14px;
+    padding: 5px 12px;
+    border-radius: 8px;
+}
+
+.fed-badge {
+    background: #f3f4f6;
+    color: #444;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+/* RANK COLUMN */
+
+.rank-num {
+    color: #888;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ================= EMPTY STATE ================= */
+
+.empty-state {
+    text-align: center;
+    padding: 80px 40px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: #777;
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+/* ================= DASHBOARD REDESIGN ================= */
+
+.dash-banner {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    background: black;
+    color: white;
+    padding: 32px 40px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+
+.dash-avatar {
+    font-size: 56px;
+    filter: drop-shadow(0 4px 12px rgba(255,255,255,0.15));
+}
+
+.dash-identity h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.dash-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* RATING BARS */
+
+.rating-card p {
+    font-size: 36px;
+    font-weight: 600;
+    margin: 8px 0 12px;
+}
+
+.rating-bar-wrap {
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.rating-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #000, #555);
+    border-radius: 20px;
+    transition: width 1s ease;
+}
+
+/* RANK CARD */
+
+.rank-card p {
+    font-size: 36px;
+    font-weight: 600;
+    margin-top: 8px;
+    color: #D4AF37;
+}
+
+/* GAMES PLAYED */
+
+.chart-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    text-align: center;
+}
+
+.games-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: #f9fafb;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.games-num {
+    font-size: 30px;
+    font-weight: 700;
+    color: #111;
+}
+
+.games-label {
+    font-size: 12px;
+    color: #888;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* QUICK ACTIONS */
+
+.dash-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    margin-bottom: 60px;
+}
+
+/* ================= FEDERATION LEADERBOARD ================= */
+
+.section-sub {
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+    margin-top: -28px;
+    margin-bottom: 36px;
+}
+
+.fed-table td, .fed-table th {
+    vertical-align: middle;
+}
+
+.fed-flag {
+    font-size: 20px;
+    margin-right: 6px;
+}
+
+.rank-badge {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+.rank-badge.gold   { background: #FFF8DC; color: #B8860B; }
+.rank-badge.silver { background: #f0f0f0; color: #555;    }
+.rank-badge.bronze { background: #FFF0E6; color: #8B4513; }
+
+.table-link {
+    color: #000;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.table-link:hover {
+    text-decoration: underline;
+}
+
+/* ================= 404 ERROR PAGE ================= */
+
+.error-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 75vh;
+    padding: 40px;
+}
+
+.error-card {
+    text-align: center;
+    background: white;
+    padding: 60px 80px;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    max-width: 560px;
+}
+
+.error-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.error-code {
+    font-size: 96px;
+    font-weight: 700;
+    letter-spacing: -4px;
+    color: #111;
+    line-height: 1;
+    margin-bottom: 12px;
+}
+
+.error-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+
+.error-message {
+    color: #666;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+}
+
+.error-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+}
+
+/* ================= COMPARE PAGE ================= */
+
+.compare-page {
+    padding-bottom: 80px;
+}
+
+/* FORM */
+
+.compare-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: white;
+    padding: 24px 28px;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    margin-bottom: 36px;
+}
+
+.compare-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 160px;
+}
+
+.compare-input-group label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+}
+
+.compare-input-group input {
+    padding: 10px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s;
+}
+
+.compare-input-group input:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.compare-vs {
+    font-size: 13px;
+    font-weight: 700;
+    color: #999;
+    letter-spacing: 1px;
+    padding-bottom: 10px;
+}
+
+.compare-btn {
+    align-self: flex-end;
+    white-space: nowrap;
+}
+
+/* PLAYER HEADER CARDS */
+
+.compare-headers {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    align-items: stretch;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+}
+
+.compare-player-card {
+    background: #111;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 36px;
+}
+
+.compare-player-card--right {
+    justify-content: flex-end;
+    background: #1a1a1a;
+}
+
+.compare-divider {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    padding: 0 20px;
+    color: #D4AF37;
+}
+
+.cp-avatar {
+    font-size: 40px;
+    opacity: 0.85;
+}
+
+.cp-info h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.cp-info--right {
+    text-align: right;
+}
+
+.cp-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cp-meta--right {
+    justify-content: flex-end;
+}
+
+/* Override badge colours inside dark banner */
+.compare-player-card .fed-badge {
+    background: rgba(255,255,255,0.12);
+    color: #ddd;
+}
+
+/* STAT ROWS */
+
+.compare-stats {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    overflow: hidden;
+    margin-bottom: 28px;
+}
+
+.stat-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 16px 32px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.15s;
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-row:hover {
+    background: #fafafa;
+}
+
+.stat-val {
+    font-size: 20px;
+    font-weight: 600;
+    color: #bbb;
+    text-align: center;
+}
+
+.stat-val:first-child { text-align: left; }
+.stat-val:last-child  { text-align: right; }
+
+.stat-win {
+    color: #111;
+    font-size: 22px;
+}
+
+.stat-win::after {
+    content: ' ★';
+    font-size: 13px;
+    color: #D4AF37;
+    vertical-align: middle;
+}
+
+.stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #999;
+    text-align: center;
+    white-space: nowrap;
+    padding: 0 24px;
+}
+

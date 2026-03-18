@@ -87,22 +87,61 @@
 
 <script>
 
+    // Federation data from Flask
+    const fedPoints = [
+        {% for f in fed_data %}
+        {
+            lat: {{ f.lat }},
+            lng: {{ f.lng }},
+            code: "{{ f.code }}",
+            count: {{ f.count }},
+            avg: {{ f.avg }}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    // Scale point size logarithmically
+    const maxCount = Math.max(...fedPoints.map(d => d.count));
+
+    function pointSize(d) {
+        return 0.3 + (Math.log(d.count + 1) / Math.log(maxCount + 1)) * 1.4;
+    }
+
+    function pointColor(d) {
+        const ratio = d.count / maxCount;
+        if (ratio > 0.6)  return '#D4AF37';   // gold — top feds
+        if (ratio > 0.25) return '#a0a0a0';   // silver — mid
+        return '#555555';                      // dark — small feds
+    }
+
+    const tooltip = document.getElementById('globe-tooltip');
+
     const world = Globe()
         (document.getElementById('globe'))
-
         .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-
         .backgroundColor('rgba(0,0,0,0)')
-
         .showAtmosphere(true)
-
         .atmosphereColor('#3a228a')
-
         .atmosphereAltitude(0.25)
+        .width(document.getElementById('globe').parentElement.offsetWidth || 900)
+        .height(480)
+        .pointsData(fedPoints)
+        .pointLat(d => d.lat)
+        .pointLng(d => d.lng)
+        .pointRadius(pointSize)
+        .pointColor(pointColor)
+        .pointAltitude(0.02)
+        .pointLabel(d =>
+            `<div style="background:rgba(0,0,0,0.75);color:#fff;padding:8px 12px;border-radius:8px;font-family:Inter,sans-serif;font-size:13px;line-height:1.6;">
+                <strong>${d.code}</strong><br/>
+                Players: ${d.count.toLocaleString()}<br/>
+                Avg Rating: ${d.avg}
+            </div>`
+        );
 
-        .width(900)
-
-        .height(450)
+    // Slow auto-rotation
+    world.controls().autoRotate = true;
+    world.controls().autoRotateSpeed = 0.5;
 
 </script>
 
