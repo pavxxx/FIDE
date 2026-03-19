@@ -4,32 +4,32 @@
 
 <div class="container">
 
-<h1>Search Results</h1>
+    <h1>Search Results</h1>
 
-<table class="table">
+    <table class="table">
 
-<tr>
-<th>Name</th>
-<th>Rating</th>
-</tr>
+        <tr>
+            <th>Name</th>
+            <th>Rating</th>
+        </tr>
 
-{% for p in players %}
+        {% for p in players %}
 
-<tr>
+        <tr>
 
-<td>
-<a href="{{ url_for('player_profile', fide_id=p.fide_id) }}">
-{{ p.name }}
-</a>
-</td>
+            <td>
+                <a href="{{ url_for('player_profile', fide_id=p.fide_id) }}">
+                    {{ p.name }}
+                </a>
+            </td>
 
-<td>{{ p.standard_rating }}</td>
+            <td>{{ p.standard_rating }}</td>
 
-</tr>
+        </tr>
 
-{% endfor %}
+        {% endfor %}
 
-</table>
+    </table>
 
 </div>
 

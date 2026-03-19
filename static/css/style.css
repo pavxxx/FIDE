@@ -40,7 +40,7 @@ body::after {
     pointer-events: none;
     z-index: -10;
 
-    background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1.5px, transparent 1.5px);
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 1.5px, transparent 1.5px);
     background-size: 28px 28px;
 }
 
@@ -72,7 +72,7 @@ body::after {
     padding: 14px 28px;
 
     background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(15px);
 
     border-radius: 14px;
 
@@ -295,7 +295,7 @@ body::after {
     cursor: pointer;
     box-sizing: border-box;
     transition: all .3s ease;
-    
+
     position: relative;
     overflow: hidden;
 }
@@ -310,10 +310,10 @@ body::after {
     pointer-events: none;
 
     background-image:
-        linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%),
-        linear-gradient(-45deg, rgba(255,255,255,0.15) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.15) 75%),
-        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.15) 75%);
+        linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.15) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.15) 75%);
 
     background-size: 20px 20px;
     animation: chessMove 10s linear infinite;
@@ -592,7 +592,7 @@ footer {
     background: white;
     padding: 20px 24px;
     border-radius: 14px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     margin-bottom: 20px;
 }
 
@@ -661,8 +661,9 @@ footer {
 /* ================= TITLE BADGE ================= */
 
 .title-badge {
-    background: #000;
-    color: #D4AF37;
+    background: rgba(212, 175, 55, 0.15);
+    color: #b8860b;
+    border: 1px solid rgba(212, 175, 55, 0.4);
     font-size: 11px;
     font-weight: 700;
     padding: 3px 8px;
@@ -700,7 +701,7 @@ footer {
     padding: 80px 40px;
     background: white;
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
 
 .empty-icon {
@@ -735,7 +736,7 @@ footer {
 
 .dash-avatar {
     font-size: 56px;
-    filter: drop-shadow(0 4px 12px rgba(255,255,255,0.15));
+    filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.15));
 }
 
 .dash-identity h1 {
@@ -842,7 +843,8 @@ footer {
     margin-bottom: 36px;
 }
 
-.fed-table td, .fed-table th {
+.fed-table td,
+.fed-table th {
     vertical-align: middle;
 }
 
@@ -859,9 +861,20 @@ footer {
     border-radius: 8px;
 }
 
-.rank-badge.gold   { background: #FFF8DC; color: #B8860B; }
-.rank-badge.silver { background: #f0f0f0; color: #555;    }
-.rank-badge.bronze { background: #FFF0E6; color: #8B4513; }
+.rank-badge.gold {
+    background: #FFF8DC;
+    color: #B8860B;
+}
+
+.rank-badge.silver {
+    background: #f0f0f0;
+    color: #555;
+}
+
+.rank-badge.bronze {
+    background: #FFF0E6;
+    color: #8B4513;
+}
 
 .table-link {
     color: #000;
@@ -890,7 +903,7 @@ footer {
     background: white;
     padding: 60px 80px;
     border-radius: 24px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
     max-width: 560px;
 }
 
@@ -943,7 +956,7 @@ footer {
     background: white;
     padding: 24px 28px;
     border-radius: 16px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
     margin-bottom: 36px;
 }
 
@@ -1000,7 +1013,7 @@ footer {
     margin-bottom: 10px;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
 }
 
 .compare-player-card {
@@ -1054,7 +1067,7 @@ footer {
 
 /* Override badge colours inside dark banner */
 .compare-player-card .fed-badge {
-    background: rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.12);
     color: #ddd;
 }
 
@@ -1063,7 +1076,7 @@ footer {
 .compare-stats {
     background: white;
     border-radius: 16px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
     overflow: hidden;
     margin-bottom: 28px;
 }
@@ -1092,8 +1105,13 @@ footer {
     text-align: center;
 }
 
-.stat-val:first-child { text-align: left; }
-.stat-val:last-child  { text-align: right; }
+.stat-val:first-child {
+    text-align: left;
+}
+
+.stat-val:last-child {
+    text-align: right;
+}
 
 .stat-win {
     color: #111;
@@ -1117,4 +1135,3 @@ footer {
     white-space: nowrap;
     padding: 0 24px;
 }
-

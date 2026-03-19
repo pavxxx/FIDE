@@ -3,27 +3,27 @@
 
 <div class="auth-page">
 
-<div class="auth-card">
+    <div class="auth-card">
 
-<h2>Create Account</h2>
+        <h2>Create Account</h2>
 
-<form method="POST">
+        <form method="POST">
 
-<input type="text" name="fide_id" placeholder="FIDE ID" required>
+            <input type="text" name="fide_id" placeholder="FIDE ID" required>
 
-<input type="text" name="username" placeholder="Username" required>
+            <input type="text" name="username" placeholder="Username" required>
 
-<input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="password" placeholder="Password" required>
 
-{% if error %}
-<div class="alert-error">{{ error }}</div>
-{% endif %}
+            {% if error %}
+            <div class="alert-error">{{ error }}</div>
+            {% endif %}
 
-<button class="btn-primary" style="width: 100%;"><span>Signup</span></button>
+            <button class="btn-primary" style="width: 100%;"><span>Signup</span></button>
 
-</form>
+        </form>
 
-</div>
+    </div>
 
 </div>
 
