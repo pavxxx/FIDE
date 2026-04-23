@@ -180,38 +180,52 @@ def signup():
 
     if request.method == "POST":
 
-        fide_id = request.form["fide_id"]
-        username = request.form["username"]
+        user_id = request.form["user_id"]
         password = request.form["password"]
+        role = request.form.get("role", "player")
 
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # check if fide id exists
-        cursor.execute("SELECT fide_id FROM players WHERE fide_id=%s", (fide_id,))
-        player = cursor.fetchone()
+        if role == "admin":
+            # Admin signup logic
+            cursor.execute("SELECT * FROM admin WHERE username=%s", (user_id,))
+            if cursor.fetchone():
+                conn.close()
+                return render_template("signup.html", error="Admin Username already exists")
 
-        if not player:
+            hashed_password = generate_password_hash(password)
+            cursor.execute("INSERT INTO admin (username, password_hash) VALUES (%s, %s)", (user_id, hashed_password))
+            conn.commit()
             conn.close()
-            return render_template("signup.html", error="Invalid FIDE ID")
+            return redirect(url_for("login"))
 
-        # check username
-        cursor.execute("SELECT * FROM player_login WHERE username=%s", (username,))
-        if cursor.fetchone():
+        else:
+            # check if fide id exists
+            cursor.execute("SELECT fide_id FROM players WHERE fide_id=%s", (user_id,))
+            player = cursor.fetchone()
+
+            if not player:
+                conn.close()
+                return render_template("signup.html", error="User ID (FIDE ID) not found")
+
+            # check username
+            cursor.execute("SELECT * FROM player_login WHERE fide_id=%s", (user_id,))
+            if cursor.fetchone():
+                conn.close()
+                return render_template("signup.html", error="User ID already registered")
+
+            hashed_password = generate_password_hash(password)
+
+            cursor.execute("""
+                INSERT INTO player_login (fide_id, username, password_hash, role)
+                VALUES (%s, %s, %s, 'player')
+            """, (user_id, user_id, hashed_password))
+
+            conn.commit()
             conn.close()
-            return render_template("signup.html", error="Username already exists")
 
-        hashed_password = generate_password_hash(password)
-
-        cursor.execute("""
-            INSERT INTO player_login (fide_id, username, password_hash, role)
-            VALUES (%s, %s, %s, 'player')
-        """, (fide_id, username, hashed_password))
-
-        conn.commit()
-        conn.close()
-
-        return redirect(url_for("login"))
+            return redirect(url_for("login"))
 
     return render_template("signup.html")
 
@@ -224,13 +238,24 @@ def login():
 
     if request.method == "POST":
 
-        username = request.form["username"]
+        user_id = request.form["user_id"]
         password = request.form["password"]
 
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute("SELECT * FROM player_login WHERE username=%s", (username,))
+        # First, check if it's an admin logging in
+        cursor.execute("SELECT * FROM admin WHERE username=%s", (user_id,))
+        admin_user = cursor.fetchone()
+
+        if admin_user and check_password_hash(admin_user["password_hash"], password):
+            session["user_id"] = admin_user["admin_id"]
+            session["role"] = "admin"
+            conn.close()
+            return redirect(url_for("admin_dashboard"))
+
+        # If not an admin, check player_login
+        cursor.execute("SELECT * FROM player_login WHERE fide_id=%s", (user_id,))
         user = cursor.fetchone()
 
         conn.close()
@@ -239,6 +264,7 @@ def login():
 
             session["user_id"] = user["login_id"]
             session["fide_id"] = user["fide_id"]
+            session["role"] = user["role"]
 
             return redirect(url_for("dashboard"))
 
@@ -518,6 +544,137 @@ def top10():
     conn.close()
 
     return render_template("top10_widget.html", players=players)
+
+# ===============================
+# ADMIN MODULE
+# ===============================
+@app.route("/admin")
+def admin_dashboard():
+    if session.get("role") != "admin":
+        return redirect(url_for("home"))
+    
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    cursor.execute("""
+        SELECT p.fide_id, p.name, p.sex, r.fed_code AS fed, r.standard_rating 
+        FROM players p 
+        LEFT JOIN ratings r ON p.fide_id = r.fide_id
+        ORDER BY p.fide_id DESC LIMIT 100
+    """)
+    players = cursor.fetchall()
+    conn.close()
+    
+    return render_template("admin_dashboard.html", players=players)
+
+@app.route("/admin/add_player", methods=["GET", "POST"])
+def add_player():
+    if session.get("role") != "admin":
+        return redirect(url_for("home"))
+
+    if request.method == "POST":
+        fide_id = request.form["fide_id"]
+        name = request.form["name"]
+        fed = request.form["fed"]
+        sex = request.form["sex"]
+        
+        birth_year = request.form.get("birth_year", "")
+        birth_year = int(birth_year) if birth_year.strip() else None
+        
+        std_rating = request.form.get("std_rating", "")
+        std_rating = int(std_rating) if str(std_rating).strip() else 0
+        
+        std_games = request.form.get("std_games", "")
+        std_games = int(std_games) if str(std_games).strip() else 0
+        
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute("""
+                INSERT INTO players (fide_id, name, sex, birth_year)
+                VALUES (%s, %s, %s, %s)
+            """, (fide_id, name, sex, birth_year))
+            
+            cursor.execute("""
+                INSERT INTO ratings (fide_id, standard_rating, standard_games, fed_code)
+                VALUES (%s, %s, %s, %s)
+            """, (fide_id, std_rating, std_games, fed))
+            
+            conn.commit()
+        except Exception as e:
+            conn.rollback()
+            return render_template("add_player.html", error=str(e))
+        finally:
+            conn.close()
+            
+        return redirect(url_for("admin_dashboard"))
+
+    return render_template("add_player.html")
+
+@app.route("/admin/edit_player/<int:fide_id>", methods=["GET", "POST"])
+def edit_player(fide_id):
+    if session.get("role") != "admin":
+        return redirect(url_for("home"))
+        
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    if request.method == "POST":
+        name = request.form["name"]
+        fed = request.form["fed"]
+        sex = request.form["sex"]
+        
+        birth_year = request.form.get("birth_year", "")
+        birth_year = int(birth_year) if birth_year.strip() else None
+        
+        std_rating = request.form.get("std_rating", "")
+        std_rating = int(std_rating) if str(std_rating).strip() else 0
+        
+        std_games = request.form.get("std_games", "")
+        std_games = int(std_games) if str(std_games).strip() else 0
+        
+        title_code = request.form.get("title_code", "")
+        if not title_code.strip():
+            title_code = None
+        
+        try:
+            cursor.execute("""
+                UPDATE players SET name=%s, sex=%s, birth_year=%s
+                WHERE fide_id=%s
+            """, (name, sex, birth_year, fide_id))
+            
+            # Check if rating exists
+            cursor.execute("SELECT fide_id FROM ratings WHERE fide_id=%s", (fide_id,))
+            if cursor.fetchone():
+                cursor.execute("""
+                    UPDATE ratings SET standard_rating=%s, standard_games=%s, fed_code=%s, title_code=%s
+                    WHERE fide_id=%s
+                """, (std_rating, std_games, fed, title_code, fide_id))
+            else:
+                cursor.execute("""
+                    INSERT INTO ratings (fide_id, standard_rating, standard_games, fed_code, title_code)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (fide_id, std_rating, std_games, fed, title_code))
+                
+            conn.commit()
+            conn.close()
+            return redirect(url_for("admin_dashboard"))
+        except Exception as e:
+            conn.rollback()
+            # If an error happens, we re-fetch the player so the template has context to display
+            pass
+        
+    cursor.execute("""
+        SELECT p.*, r.standard_rating, r.standard_games, r.title_code 
+        FROM players p LEFT JOIN ratings r ON p.fide_id=r.fide_id WHERE p.fide_id=%s
+    """, (fide_id,))
+    player = cursor.fetchone()
+    conn.close()
+    
+    return render_template("edit_player.html", player=player)
+
+
 # ===============================
 # ERROR HANDLERS
 # ===============================
@@ -530,4 +687,19 @@ def page_not_found(e):
 # RUN APP
 # ===============================
 if __name__ == "__main__":
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS admin (
+                admin_id INT PRIMARY KEY AUTO_INCREMENT,
+                username VARCHAR(255) UNIQUE NOT NULL,
+                password_hash VARCHAR(255) NOT NULL
+            )
+        """)
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Startup DB check error: {e}")
+
     app.run(debug=True)
