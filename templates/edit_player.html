@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="auth-page" style="height: auto; padding: 60px 0;">
+    <div class="auth-card" style="width: 480px; text-align: left;">
+        <h2 style="margin-bottom: 8px;">Edit Player</h2>
+        <p style="text-align: center; margin-top: 0; margin-bottom: 24px; font-size: 14px; font-weight: 500; color: #777;">FIDE ID: <span style="color: black;">{{ player.fide_id }}</span></p>
+        
+        <form method="POST">
+            <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 6px; display: block; text-transform: uppercase;">Full Name</label>
+            <input type="text" name="name" value="{{ player.name }}" required>
+            
+            <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 6px; display: block; text-transform: uppercase;">Federation Code</label>
+            <input type="text" name="fed" value="{{ player.fed }}" required maxlength="3">
+            
+            <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 6px; display: block; text-transform: uppercase;">Sex (M/F)</label>
+            <input type="text" name="sex" value="{{ player.sex }}" required maxlength="1">
+            
+            <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 6px; display: block; text-transform: uppercase;">Birth Year</label>
+            <input type="number" name="birth_year" value="{{ player.birth_year }}">
+            
+            <hr style="margin: 25px 0; border: none; border-top: 1px solid #eee;">
+            <p style="margin-bottom: 20px; font-weight: 600; font-size: 16px; text-align: center;">Ratings & Titles</p>
+            
+            <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 6px; display: block; text-transform: uppercase;">Title Code</label>
+            <input type="text" name="title_code" value="{{ player.title_code or '' }}">
+            
+            <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 6px; display: block; text-transform: uppercase;">Standard Rating</label>
+            <input type="number" name="std_rating" value="{{ player.standard_rating or 0 }}">
+            
+            <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 6px; display: block; text-transform: uppercase;">Standard Games</label>
+            <input type="number" name="std_games" value="{{ player.standard_games or 0 }}">
+
+            {% if error %}
+            <div class="alert-error">{{ error }}</div>
+            {% endif %}
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn-primary" style="flex: 1; border: none; font-family: 'Inter', sans-serif;"><span>Update Player</span></button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn-outline" style="flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: 500;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

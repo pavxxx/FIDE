@@ -9,9 +9,13 @@
 
 <form method="POST">
 
-<input type="text" name="fide_id" placeholder="FIDE ID" required>
+<input type="text" name="user_id" placeholder="User ID / Username" required>
 
-<input type="text" name="username" placeholder="Username" required>
+<select name="role" required style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 6px; border: 1px solid var(--border-color, #444); background: var(--card-bg); color: var(--text-color); font-family: 'Inter', sans-serif;">
+    <option value="" disabled selected>Select Role</option>
+    <option value="player">Player</option>
+    <option value="admin">Admin</option>
+</select>
 
 <input type="password" name="password" placeholder="Password" required>
 
