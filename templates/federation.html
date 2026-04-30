@@ -1,32 +1,33 @@
 {% extends "base.html" %}
-
 {% block content %}
 
 <section class="container">
 
-<h1 class="section-title">Federation Leaderboard</h1>
+    <h1 class="section-title">Players from {{ fed }}</h1>
 
-<table class="table">
-
-<tr>
-<th>Federation</th>
-<th>Players</th>
-<th>Average Rating</th>
-</tr>
-
-{% for f in data %}
-
-<tr>
-
-<td>{{ f.fed_code }}</td>
-<td>{{ f.players }}</td>
-<td>{{ f.avg_rating|round }}</td>
-
-</tr>
-
-{% endfor %}
-
-</table>
+    {% if players %}
+    <table class="table">
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Standard Rating</th>
+        </tr>
+        {% for p in players %}
+        <tr>
+            <td class="rank-num">{{ loop.index }}</td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.standard_rating or '—' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">♟</div>
+        <h3>No players found</h3>
+        <p>There are no players listed under this federation.</p>
+        <a href="{{ url_for('federations') }}" class="btn-primary"><span>Back to Federations</span></a>
+    </div>
+    {% endif %}
 
 </section>
 

@@ -36,6 +36,19 @@
         </tbody>
     </table>
 
+    <!-- Pagination Controls -->
+    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 30px;">
+        {% if page > 1 %}
+            <a href="{{ url_for('admin_dashboard', page=page-1) }}" class="btn-outline" style="padding: 8px 16px;">Previous</a>
+        {% endif %}
+        
+        <span style="font-weight: 500; font-size: 15px; color: var(--text-muted);">Page {{ page }} of {{ total_pages }}</span>
+        
+        {% if page < total_pages %}
+            <a href="{{ url_for('admin_dashboard', page=page+1) }}" class="btn-outline" style="padding: 8px 16px;">Next</a>
+        {% endif %}
+    </div>
+
 </div>
 
 {% endblock %}

@@ -262,7 +262,7 @@ def login():
 
         if user and check_password_hash(user["password_hash"], password):
 
-            session["user_id"] = user["login_id"]
+            session["user_id"] = user["fide_id"]
             session["fide_id"] = user["fide_id"]
             session["role"] = user["role"]
 
@@ -553,19 +553,28 @@ def admin_dashboard():
     if session.get("role") != "admin":
         return redirect(url_for("home"))
     
+    page = request.args.get('page', 1, type=int)
+    per_page = 100
+    offset = (page - 1) * per_page
+    
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
+    
+    # Get total count for pagination
+    cursor.execute("SELECT COUNT(*) as total FROM players")
+    total_players = cursor.fetchone()['total']
+    total_pages = (total_players + per_page - 1) // per_page
     
     cursor.execute("""
         SELECT p.fide_id, p.name, p.sex, r.fed_code AS fed, r.standard_rating 
         FROM players p 
         LEFT JOIN ratings r ON p.fide_id = r.fide_id
-        ORDER BY p.fide_id DESC LIMIT 100
-    """)
+        ORDER BY p.fide_id ASC LIMIT %s OFFSET %s
+    """, (per_page, offset))
     players = cursor.fetchall()
     conn.close()
     
-    return render_template("admin_dashboard.html", players=players)
+    return render_template("admin_dashboard.html", players=players, page=page, total_pages=total_pages)
 
 @app.route("/admin/add_player", methods=["GET", "POST"])
 def add_player():

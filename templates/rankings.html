@@ -68,7 +68,7 @@
         {% for p in players %}
         <tr>
             <td class="rank-num">{{ loop.index }}</td>
-            <td><a href="{{ url_for('player_profile', fide_id=p.fide_id) }}">{{ p.name }}</a></td>
+            <td>{{ p.name }}</td>
             <td>{{ p.fed_code or '—' }}</td>
             <td>
                 {% if p.title_code %}

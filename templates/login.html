@@ -7,17 +7,17 @@
 
         <h2>Login</h2>
 
-        <form method="POST">
+        <form method="POST" action="{{ url_for('login') }}">
 
-            <input type="text" name="user_id" placeholder="User ID" required>
+            <input type="text" name="user_id" id="user_id" placeholder="User ID" autocomplete="username" required>
 
-            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="password" id="password" placeholder="Password" autocomplete="current-password" required>
 
             {% if error %}
             <div class="alert-error">{{ error }}</div>
             {% endif %}
 
-            <button class="btn-primary" style="width: 100%;"><span>Login</span></button>
+            <button type="submit" class="btn-primary" style="width: 100%;"><span>Login</span></button>
 
         </form>
 
